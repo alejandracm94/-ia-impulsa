@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA Impulsa · Prototipo de alta resolución</title>
+<style>
+:root{--bg:#FFF9F0;--card:#fff;--ink:#1F2933;--mut:#5B6770;--pri:#0F766E;--pri-d:#0B5C56;--soft:#E3F3F0;--acc:#F59E0B;--acc-s:#FEF3C7;--ok:#15803D;--ok-s:#DCFCE7;--bad:#B91C1C;--bad-s:#FEE2E2;--line:#E7DFD0}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:#E9E3D6;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);line-height:1.45}
+.shell{max-width:430px;height:100dvh;margin:0 auto;background:var(--bg);display:flex;flex-direction:column;position:relative;overflow:hidden}
+@media(min-width:600px){body{padding:24px 0}.shell{height:min(860px,calc(100dvh - 48px));border-radius:28px;box-shadow:0 20px 60px rgba(0,0,0,.25)}}
+.top{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--pri);color:#fff;flex-shrink:0}
+.logo{width:34px;height:34px;border-radius:10px;background:var(--acc);color:#3b2a00;font-weight:800;display:grid;place-items:center;font-size:15px}
+.top h1{font-size:16px;margin:0;flex:1;font-weight:700}
+.top button{background:rgba(255,255,255,.18);border:0;color:#fff;border-radius:10px;padding:8px 10px;font-size:18px;cursor:pointer}
+main{flex:1;overflow-y:auto;padding:16px}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);background:#fff;border-top:1px solid var(--line);flex-shrink:0}
+.tabs button{border:0;background:none;padding:8px 2px 10px;font-size:11px;color:var(--mut);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs button span{font-size:20px}
+.tabs button.on{color:var(--pri);font-weight:700}
+h2{font-size:20px;margin:4px 0 6px}
+h3{font-size:15px;margin:0 0 4px}
+p{margin:0 0 10px}
+.mut{color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.btn{display:block;width:100%;border:0;background:var(--pri);color:#fff;font-size:16px;font-weight:700;padding:13px;border-radius:12px;cursor:pointer;margin-top:10px}
+.btn:hover{background:var(--pri-d)}
+.btn.sec{background:#fff;color:var(--pri);border:2px solid var(--pri)}
+.btn.sm{display:inline-block;width:auto;font-size:14px;padding:8px 14px;margin:0}
+.btn:disabled{background:#b9c4c2;cursor:not-allowed}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 13px;font-size:13px;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.bar{height:10px;background:#E9E3D6;border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pri);border-radius:99px;transition:width .3s}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 5px}
+input[type=text],select,textarea{width:100%;font:inherit;padding:11px;border:1px solid #cfc6b4;border-radius:10px;background:#fff}
+.opt{display:flex;gap:10px;align-items:center;padding:12px;border:2px solid var(--line);border-radius:12px;background:#fff;margin-bottom:8px;cursor:pointer;text-align:left;width:100%;font:inherit}
+.opt.on{border-color:var(--pri);background:var(--soft)}
+.row{display:flex;gap:10px;align-items:center}
+.row .grow{flex:1}
+.ic{width:42px;height:42px;border-radius:12px;background:var(--soft);display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.tag{display:inline-block;font-size:11px;font-weight:700;border-radius:99px;padding:3px 9px;background:var(--acc-s);color:#7a4b00}
+.tag.ok{background:var(--ok-s);color:var(--ok)}
+.tag.g{background:#eee;color:#555}
+.lesson{display:flex;gap:12px;align-items:center;width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;margin-bottom:8px;cursor:pointer;text-align:left;font:inherit}
+.lesson.done{background:var(--ok-s);border-color:#a7e3b8}
+.video{background:#14302d;border-radius:16px;aspect-ratio:16/9;display:grid;place-items:center;color:#fff;position:relative;overflow:hidden;margin-bottom:12px}
+.video button{width:64px;height:64px;border-radius:50%;border:0;background:var(--acc);font-size:26px;cursor:pointer}
+.video .vb{position:absolute;left:0;right:0;bottom:0;height:6px;background:rgba(255,255,255,.25)}
+.video .vb i{display:block;height:100%;background:var(--acc);width:0}
+.video small{position:absolute;left:12px;top:10px;opacity:.85}
+.out{background:#F5F1E8;border-radius:12px;padding:12px;font-size:14px;white-space:pre-wrap;border:1px dashed #cfc6b4}
+.sent{display:block;width:100%;text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:8px;font:inherit;cursor:pointer}
+.sent:disabled{color:var(--ink);cursor:default}
+.sent.on{border-color:var(--acc);background:var(--acc-s)}
+.sent.good{border-color:var(--ok);background:var(--ok-s)}
+.sent.miss{border-color:var(--bad);background:var(--bad-s)}
+.fb{font-size:13px;margin-top:4px}
+.chk{display:flex;gap:12px;align-items:flex-start;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer;width:100%;font:inherit;text-align:left}
+.chk b{width:24px;height:24px;border-radius:7px;border:2px solid #b8b09e;display:grid;place-items:center;flex-shrink:0;color:#fff;font-size:14px}
+.chk.on b{background:var(--ok);border-color:var(--ok)}
+.cert{border:4px double var(--acc);background:#fffdf6;border-radius:12px;padding:22px 14px;text-align:center}
+.cert h2{color:var(--pri)}
+.price{font-size:28px;font-weight:800}
+.price small{font-size:14px;font-weight:500;color:var(--mut)}
+ul.tick{list-style:none;padding:0;margin:8px 0}
+ul.tick li{padding:3px 0 3px 22px;position:relative;font-size:14px}
+ul.tick li::before{content:"✓";position:absolute;left:0;color:var(--ok);font-weight:800}
+ul.tick li.no{color:#8a8f94}
+ul.tick li.no::before{content:"–";color:#8a8f94}
+.warn{background:var(--acc-s);border-left:5px solid var(--acc);border-radius:10px;padding:10px 12px;font-size:13px;margin-bottom:12px}
+.drawer{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;z-index:5}
+.drawer.on{display:block}
+.drawer div{position:absolute;right:0;top:0;bottom:0;width:86%;background:#fff;padding:16px;overflow:auto}
+.drawer button.it{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:10px 4px;border-bottom:1px solid var(--line);font:inherit;cursor:pointer}
+.drawer .n{width:26px;height:26px;border-radius:50%;background:var(--pri);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;flex-shrink:0}
+.toast{position:absolute;left:16px;right:16px;bottom:84px;background:#1F2933;color:#fff;padding:12px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:6}
+.toast.on{opacity:1}
+.hint{font-size:12px;color:var(--mut);text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<div class="shell" id="shell">
+  <div class="top"><div class="logo">IA</div><h1>IA Impulsa</h1><button id="menuBtn" aria-label="Índice del prototipo">☰</button></div>
+  <main id="app"></main>
+  <nav class="tabs" id="tabs">
+    <button data-go="ruta" data-tab="ruta"><span>🧭</span>Ruta</button>
+    <button data-go="comparar" data-tab="comparar"><span>⚖️</span>Herramientas</button>
+    <button data-go="prompts" data-tab="prompts"><span>✍️</span>Prompts</button>
+    <button data-go="ejercicio" data-tab="practica"><span>🎯</span>Práctica</button>
+    <button data-go="mas" data-tab="mas"><span>⋯</span>Más</button>
+  </nav>
+  <div class="drawer" id="drawer"><div id="drawerBox"></div></div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ============ Datos ============ */
+const BIZ = {tienda:'Tienda o miscelánea', ropa:'Ropa y accesorios', belleza:'Belleza (peluquería, salón)', ferreteria:'Ferretería', papeleria:'Papelería'};
+const EX  = {tienda:'arroz y aceite', ropa:'jeans de temporada', belleza:'tratamiento de keratina', ferreteria:'taladro inalámbrico', papeleria:'kit de cuadernos escolares'};
+const ROLES = {propietario:'Propietario', administrador:'Administrador', empleado:'Empleado'};
+
+const LESSONS = [
+  {id:1, lvl:'Básico', min:5,  t:'Qué es la IA y qué no hace', pts:['La IA genera textos e imágenes a partir de lo que tú le pides.','No conoce tu negocio ni tus precios: solo sabe lo que tú le cuentas.','Puede equivocarse o inventar datos, por eso siempre se revisa.'], ex:'Ejemplo: pídele una idea de publicación para tu {ex}, pero los precios los pones tú.'},
+  {id:2, lvl:'Básico', min:8,  t:'Cómo pedirle bien las cosas (prompts)', pts:['Dile quién eres: “Tengo una {biz} en Bogotá”.','Dile qué quieres y para qué: “un mensaje corto para WhatsApp”.','Dale los datos reales: producto, precio y horario.'], ex:'Ejemplo: “Escribe un mensaje de WhatsApp para vender {ex}, tono amable, máximo 40 palabras”.'},
+  {id:3, lvl:'Básico', min:6,  t:'Qué información nunca compartir', pts:['Nunca compartas teléfonos, direcciones ni nombres completos de clientes.','Tampoco claves, números de cuenta ni cuentas por cobrar.','Si dudas, cambia el dato real por uno inventado.'], ex:'Ejemplo: en vez de “Doña Luz Pérez, calle 5 #10-20”, escribe “una clienta del barrio”.'},
+  {id:4, lvl:'Intermedio', min:10, t:'Crear una promoción para WhatsApp', pts:['Elige un producto y el beneficio para el cliente.','Pídele a la IA dos versiones y escoge la que suene más a ti.','Revisa precios, fechas y horarios antes de enviar.'], ex:'Ejemplo: promoción de {ex} válida solo el fin de semana.'},
+  {id:5, lvl:'Intermedio', min:10, t:'Responder clientes con ayuda de la IA', pts:['Pega la pregunta del cliente sin su nombre ni su teléfono.','Pide una respuesta amable y breve con tu horario real.','Lee y ajusta antes de enviar: la última palabra es tuya.'], ex:'Ejemplo: cliente pregunta si tienen {ex} disponible hoy.'},
+  {id:6, lvl:'Intermedio', min:12, t:'Describir productos de tu negocio', pts:['Cuéntale a la IA qué es el producto, para quién es y qué lo hace útil.','No aceptes características que no sean ciertas (tallas, telas, medidas).','Pide la descripción en tres líneas para redes.'], ex:'Ejemplo: descripción corta de {ex} para publicar en Instagram.'},
+];
+const TOOLS = [
+  {n:'Asistente de conversación', eg:'ChatGPT, Gemini, Claude, Copilot', tasks:['Promociones','Atención al cliente','Organización'], cost:'Versión gratuita con límites; planes de pago.', lim:'Puede inventar datos y no conoce tu negocio.', risk:'Compartir datos de clientes o del negocio.'},
+  {n:'Generador de imágenes', eg:'Herramientas de imágenes con IA', tasks:['Promociones','Imágenes'], cost:'Algunas gratis con límites; otras de pago.', lim:'El texto dentro de la imagen suele salir con errores.', risk:'Imágenes que no muestran tu producto real y engañan al cliente.'},
+  {n:'Diseño de piezas con IA', eg:'Canva con funciones de IA', tasks:['Promociones','Imágenes'], cost:'Plan gratuito y plan de pago.', lim:'Las plantillas se parecen entre negocios.', risk:'Publicar precios o datos sin revisar.'},
+  {n:'Respuestas rápidas en WhatsApp Business', eg:'Mensajes automáticos', tasks:['Atención al cliente'], cost:'Incluido en la aplicación.', lim:'No entiende preguntas nuevas; solo respuestas ya escritas.', risk:'Respuestas desactualizadas (horarios, precios).'},
+  {n:'Transcripción y resumen de audios', eg:'Herramientas de voz a texto', tasks:['Organización','Atención al cliente'], cost:'Gratis con límites; de pago para más uso.', lim:'Se equivoca con ruido o acentos.', risk:'Subir audios con datos privados.'},
+];
+const PROMPTS = {
+  'Promoción': {tpl:'Escribe un mensaje de WhatsApp para promocionar {producto} con {descuento}% de descuento hasta el {fecha}. Tono amable, máximo 40 palabras. Mi negocio es una {negocio} en Bogotá.', f:[['producto','Producto'],['descuento','Descuento (%)','15'],['fecha','Fecha límite','domingo']]},
+  'Atención al cliente': {tpl:'Un cliente pregunta: “{pregunta}”. Responde de forma amable y breve. Mi horario es {horario}. Si no sabes algo, dilo y no inventes datos.', f:[['pregunta','Pregunta del cliente','¿Tienen disponible hoy?'],['horario','Horario','lunes a sábado de 7 a. m. a 8 p. m.']]},
+  'Descripción de producto': {tpl:'Describe en tres líneas para Instagram este producto: {producto}. Úsalo para clientes de barrio. Solo incluye características que yo te indique: {detalle}.', f:[['producto','Producto'],['detalle','Características reales','precio justo, buena calidad']]},
+};
+const EJ = {
+  given:['Producto: arroz y aceite','Horario: lunes a sábado de 7 a. m. a 8 p. m.','Pedidos por WhatsApp','Domicilios solo dentro del barrio','No se indicó ningún precio'],
+  sents:[
+    {t:'¡Gran promoción en La Esquina! 🎉', bad:false, why:'Es un saludo; no afirma datos.'},
+    {t:'Llevamos el kilo de arroz a $1.500 todos los días del año.', bad:true, why:'Precio inventado: no le diste ningún precio.'},
+    {t:'Atendemos de lunes a sábado de 7 a. m. a 8 p. m.', bad:false, why:'Coincide con el horario que diste.'},
+    {t:'Envío gratis a cualquier ciudad de Colombia.', bad:true, why:'Inventó un servicio: solo hay domicilios dentro del barrio.'},
+    {t:'Si compra hoy, recibe una garantía de 5 años en sus alimentos.', bad:true, why:'Promesa falsa que no existe.'},
+    {t:'Escríbanos por WhatsApp para hacer su pedido.', bad:false, why:'Coincide con tu canal de pedidos.'},
+  ]
+};
+const CHK = {
+  Texto:['¿Los precios, fechas y horarios son los reales de mi negocio?','¿La IA inventó algún dato, promesa o servicio?','¿Evité incluir datos privados de clientes?','¿Suena como yo hablaría con mis clientes?','¿Lo leí completo antes de publicarlo?'],
+  Imagen:['¿La imagen muestra mi producto real y no uno distinto?','¿El texto dentro de la imagen no tiene errores?','¿Las personas o lugares son apropiados y no engañan?','¿Evité mostrar datos o caras de clientes sin permiso?','¿Se nota que la imagen fue creada con IA si es necesario aclararlo?'],
+};
+const QUIZ = [
+  {q:'¿Cuál dato NO deberías compartir con una IA?', o:['Una descripción general de tu producto','El teléfono y la dirección de un cliente','El tipo de negocio que tienes'], a:1, why:'Los datos personales de clientes no se comparten.'},
+  {q:'La IA te da un precio que no recuerdas haberle dado. ¿Qué haces?', o:['Lo publicas igual','Lo verificas con tu lista de precios real','Lo subes un poco'], a:1, why:'Los datos siempre se verifican con tu información real.'},
+  {q:'¿Para qué sirve escribir un buen prompt?', o:['Para que la respuesta sea más útil y se ajuste a tu negocio','Para que la IA nunca se equivoque','Para ahorrar datos del celular'], a:0, why:'Un buen prompt mejora la respuesta, pero igual hay que revisarla.'},
+];
+
+/* ============ Estado ============ */
+const S = {name:'', role:'', biz:'tienda', done:new Set(), filter:'Todas', ptab:'Promoción', pv:{}, sel:new Set(), ejChecked:false, ctype:'Texto', chk:new Set(), qi:0, qa:[], reto:false, plan:'gratis', pay:'Nequi'};
+try{ const p=JSON.parse(localStorage.getItem('iai_profile')||'null'); if(p){S.name=p.name||'';S.role=p.role||'';S.biz=p.biz||'tienda';} }catch(e){}
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const who = () => S.name || 'amigo(a)';
+const fill = t => t.replace('{ex}',EX[S.biz]).replace('{biz}',BIZ[S.biz].toLowerCase());
+let timer = null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600);}
+function go(r){location.hash=r;}
+
+/* ============ Pantallas ============ */
+const V = {};
+V.registro = () => `
+  <h2>Crea tu perfil</h2>
+  <p class="mut"><b>No pedimos datos de tu negocio ni de tus clientes.</b></p>
+  <label for="nm">¿Cómo te llamas?</label>
+  <input id="nm" type="text" value="${esc(S.name)}" placeholder="Tu nombre" autocomplete="off">
+  <label>¿Cuál es tu rol?</label>
+  ${Object.entries(ROLES).map(([k,v])=>`<button class="opt ${S.role===k?'on':''}" data-act="role" data-v="${k}">${{propietario:'🏪',administrador:'📋',empleado:'🧑‍💼'}[k]} ${v}</button>`).join('')}
+  <label for="bz">Tipo de negocio</label>
+  <select id="bz">${Object.entries(BIZ).map(([k,v])=>`<option value="${k}" ${S.biz===k?'selected':''}>${v}</option>`).join('')}</select>
+  <button class="btn" data-act="saveProfile">Crear mi perfil</button>
+  <p class="hint">Los ejemplos de las lecciones se adaptan a tu rol y a tu tipo de negocio.</p>`;
+
+V.ruta = () => {
+  const total = LESSONS.length, d = S.done.size, pct = Math.round(d/total*100);
+  const lv = l => LESSONS.filter(x=>x.lvl===l).map(x=>`
+    <button class="lesson ${S.done.has(x.id)?'done':''}" data-go="leccion/${x.id}">
+      <div class="ic">${S.done.has(x.id)?'✅':'▶️'}</div>
+      <div class="grow" style="flex:1"><h3>${x.t}</h3><span class="mut">${x.min} min · ${x.lvl}</span></div>
+    </button>`).join('');
+  return `
+  <h2>Hola, ${esc(who())} 👋</h2>
+  <p class="mut">Ruta de aprendizaje · ${S.role?ROLES[S.role]+' · ':''}${BIZ[S.biz]}</p>
+  <div class="card"><div class="row"><b class="grow" style="flex:1">Tu avance</b><b>${pct}%</b></div>
+    <div class="bar" style="margin:8px 0"><i style="width:${pct}%"></i></div>
+    <span class="mut">${d} de ${total} lecciones completadas</span></div>
+  <h3 style="margin:14px 0 8px">Nivel básico</h3>${lv('Básico')}
+  <h3 style="margin:14px 0 8px">Nivel intermedio</h3>${lv('Intermedio')}`;
+};
+
+V.leccion = (id) => {
+  const l = LESSONS.find(x=>x.id==id) || LESSONS[0], done = S.done.has(l.id);
+  return `
+  <button class="chip" data-go="ruta">← Volver a la ruta</button>
+  <h2 style="margin-top:10px">${l.t}</h2>
+  <p><span class="tag">${l.lvl}</span> <span class="tag g">${l.min} min</span></p>
+  <div class="video"><small>Microlección · ${l.min} min</small><button data-act="play" aria-label="Reproducir">▶</button><div class="vb"><i id="vbar"></i></div></div>
+  <div class="card"><h3>Lo que aprenderás</h3><ul class="tick">${l.pts.map(p=>`<li>${fill(p)}</li>`).join('')}</ul></div>
+  <div class="card" style="background:var(--soft)"><b>Con tu negocio</b><p style="margin:4px 0 0">${fill(l.ex)}</p></div>
+  <button class="btn" data-act="complete" data-v="${l.id}" ${done?'disabled':''}>${done?'Lección completada ✓':'Marcar como completada'}</button>
+  ${done&&S.done.size>=2?`<button class="btn sec" data-go="quiz">Hacer el quiz de la ruta</button>`:''}`;
+};
+
+V.comparar = () => {
+  const f = ['Todas','Promociones','Atención al cliente','Imágenes','Organización'];
+  const list = TOOLS.filter(t=>S.filter==='Todas'||t.tasks.includes(S.filter));
+  return `
+  <h2>¿Qué IA uso para esto?</h2>
+  <p class="mut">Filtra por la tarea que quieres hacer.</p>
+  <div class="chips">${f.map(x=>`<button class="chip ${S.filter===x?'on':''}" data-act="filter" data-v="${x}">${x}</button>`).join('')}</div>
+  ${list.map(t=>`<div class="card"><h3>${t.n}</h3><div class="mut" style="margin-bottom:6px">Ej.: ${t.eg}</div>
+    <p style="margin:0 0 4px"><b>💲 Costo:</b> ${t.cost}</p>
+    <p style="margin:0 0 4px"><b>🚧 Límites:</b> ${t.lim}</p>
+    <p style="margin:0"><b>⚠️ Riesgos:</b> ${t.risk}</p></div>`).join('')}
+  <p class="hint">Datos ilustrativos del prototipo. En el producto se actualizan cada mes.</p>`;
+};
+
+function promptText(){
+  const P = PROMPTS[S.ptab]; const vals = S.pv[S.ptab] || {};
+  return P.tpl.replace(/\{(\w+)\}/g,(m,k)=>{
+    if(k==='negocio') return BIZ[S.biz].toLowerCase();
+    const f = P.f.find(x=>x[0]===k); const v = vals[k] ?? (k==='producto'?EX[S.biz]:f&&f[2]) ?? '';
+    return v || '____';
+  });
+}
+V.prompts = () => {
+  const P = PROMPTS[S.ptab]; const vals = S.pv[S.ptab] || {};
+  return `
+  <h2>Biblioteca de prompts</h2>
+  <p class="mut">Elige una plantilla, completa los datos y cópiala.</p>
+  <div class="chips">${Object.keys(PROMPTS).map(x=>`<button class="chip ${S.ptab===x?'on':''}" data-act="ptab" data-v="${x}">${x}</button>`).join('')}</div>
+  <div class="card">
+    ${P.f.map(f=>`<label>${f[1]}</label><input type="text" data-pv="${f[0]}" value="${esc(vals[f[0]] ?? (f[0]==='producto'?EX[S.biz]:(f[2]||'')))}">`).join('')}
+  </div>
+  <h3>Tu prompt listo</h3>
+  <div class="out" id="pout">${esc(promptText())}</div>
+  <button class="btn" data-act="copy">Copiar prompt</button>
+  <div class="warn" style="margin-top:12px">⚠️ Cambia siempre los datos reales por los tuyos y <b>no pegues datos de clientes</b>.</div>`;
+};
+
+V.practica = () => `
+  <div class="chips"><button class="chip ${S.sub==='ejercicio'?'on':''}" data-go="ejercicio">Ejercicio con retroalimentación</button><button class="chip ${S.sub==='checklist'?'on':''}" data-go="checklist">Lista de chequeo</button></div>`;
+
+V.ejercicio = () => {
+  S.sub='ejercicio';
+  return V.practica() + `
+  <h2>Simulador: ¿qué está mal?</h2>
+  <p class="mut">Caso ficticio: la tienda “La Esquina” le pidió a la IA un mensaje de promoción. Toca las frases que creas que son <b>errores o datos inventados</b>.</p>
+  <div class="card" style="background:var(--soft)"><b>Lo que tú le dijiste a la IA</b><ul class="tick" style="margin-bottom:0">${EJ.given.map(g=>`<li>${g}</li>`).join('')}</ul></div>
+  <h3>Respuesta de la IA</h3>
+  ${EJ.sents.map((s,i)=>{
+    let cls = S.sel.has(i)?'on':'';
+    let fb = '';
+    if(S.ejChecked){
+      if(s.bad && S.sel.has(i)){cls='good';fb=`✅ Bien visto. ${s.why}`}
+      else if(s.bad){cls='miss';fb=`❌ Se te pasó. ${s.why}`}
+      else if(S.sel.has(i)){cls='miss';fb=`⚠️ Esta estaba bien. ${s.why}`}
+    }
+    return `<button class="sent ${cls}" data-act="sel" data-v="${i}" ${S.ejChecked?'disabled':''}>${s.t}${fb?`<div class="fb">${fb}</div>`:''}</button>`;
+  }).join('')}
+  ${S.ejChecked
+    ? `<div class="card" style="background:var(--ok-s)"><b>Resultado:</b> ${EJ.sents.filter((s,i)=>s.bad===S.sel.has(i)).length} de ${EJ.sents.length} frases bien clasificadas.</div><button class="btn sec" data-act="resetEj">Intentar de nuevo</button><button class="btn" data-go="checklist">Ir a la lista de chequeo</button>`
+    : `<button class="btn" data-act="checkEj" ${S.sel.size?'':'disabled'}>Revisar mis respuestas</button>`}`;
+};
+
+V.checklist = () => {
+  S.sub='checklist';
+  const items = CHK[S.ctype], n = items.filter((_,i)=>S.chk.has(S.ctype+i)).length, ok = n===items.length;
+  return V.practica() + `
+  <h2>Lista de chequeo</h2>
+  <p class="mut">Antes de publicar lo que hizo la IA, revisa cada punto.</p>
+  <div class="chips">${Object.keys(CHK).map(x=>`<button class="chip ${S.ctype===x?'on':''}" data-act="ctype" data-v="${x}">${x}</button>`).join('')}</div>
+  ${items.map((t,i)=>`<button class="chk ${S.chk.has(S.ctype+i)?'on':''}" data-act="chk" data-v="${i}"><b>${S.chk.has(S.ctype+i)?'✓':''}</b><span>${t}</span></button>`).join('')}
+  <div class="card" style="background:${ok?'var(--ok-s)':'var(--acc-s)'}"><b>${ok?'✅ Listo para publicar':'🔎 Aún falta revisar'}</b><div class="bar" style="margin-top:8px"><i style="width:${n/items.length*100}%"></i></div><span class="mut">${n} de ${items.length} puntos revisados</span></div>`;
+};
+
+V.quiz = () => {
+  if(S.qi>=QUIZ.length){
+    const sc = S.qa.filter((a,i)=>a===QUIZ[i].a).length;
+    return `<h2>Resultado del quiz</h2>
+    <div class="card" style="text-align:center"><div class="price">${sc} / ${QUIZ.length}</div><p class="mut">respuestas correctas</p>
+    ${sc>=2?'<span class="tag ok">¡Ruta básica aprobada!</span>':'<span class="tag">Repasa las lecciones e inténtalo de nuevo</span>'}</div>
+    ${sc>=2?'<button class="btn" data-go="certificado">Ver mi certificado</button>':''}
+    <button class="btn sec" data-act="resetQuiz">Repetir quiz</button>`;
+  }
+  const q = QUIZ[S.qi], ans = S.qa[S.qi];
+  return `<h2>Quiz de la ruta básica</h2>
+  <p class="mut">Pregunta ${S.qi+1} de ${QUIZ.length}</p><div class="bar" style="margin-bottom:12px"><i style="width:${S.qi/QUIZ.length*100}%"></i></div>
+  <div class="card"><h3>${q.q}</h3></div>
+  ${q.o.map((o,i)=>{let c='';if(ans!==undefined){c=i===q.a?'good':(i===ans?'miss':'');}return `<button class="sent ${c}" data-act="qa" data-v="${i}" ${ans!==undefined?'disabled':''}>${o}</button>`}).join('')}
+  ${ans!==undefined?`<p class="fb">${ans===q.a?'✅ Correcto. ':'❌ No exactamente. '}${q.why}</p><button class="btn" data-act="qnext">${S.qi===QUIZ.length-1?'Ver resultado':'Siguiente'}</button>`:''}`;
+};
+
+V.certificado = () => `
+  <button class="chip" data-go="mas">← Volver</button>
+  <div class="cert" style="margin-top:12px">
+    <div style="font-size:42px">🏅</div>
+    <p class="mut" style="margin:0">IA Impulsa certifica que</p>
+    <h2>${esc(S.name||'Nombre de la persona')}</h2>
+    <p>completó la <b>Ruta básica de alfabetización en IA</b> para microcomercios</p>
+    <p class="mut">${new Date().toLocaleDateString('es-CO',{day:'numeric',month:'long',year:'numeric'})}</p>
+  </div>
+  <p class="hint">Certificado ilustrativo del prototipo, sin validez oficial.</p>
+  <button class="btn" data-act="cert">Descargar certificado (simulado)</button>`;
+
+V.retos = () => `
+  <h2>Retos semanales</h2>
+  <div class="card"><span class="tag">Semana 1</span><h3 style="margin-top:8px">Crea una promoción para tu producto estrella</h3>
+    <p class="mut">Usa la plantilla de “Promoción”, revísala con la lista de chequeo y compártela con tus clientes.</p>
+    <button class="chk ${S.reto?'on':''}" data-act="reto"><b>${S.reto?'✓':''}</b><span>Ya hice el reto de esta semana</span></button></div>
+  ${S.reto?'<div class="card" style="background:var(--ok-s)">🎉 ¡Buen trabajo! Nuevo reto el próximo lunes.</div>':''}
+  <div class="card"><h3>Comunidad de comerciantes</h3><p class="mut">Comparte lo que hiciste y aprende de otros comerciantes en nuestro grupo de WhatsApp.</p>
+    <button class="btn" data-act="wa">Unirme a la comunidad de WhatsApp</button></div>`;
+
+V.planes = () => `
+  <h2>Elige tu plan</h2>
+  <div class="card"><div class="row"><h3 class="grow" style="flex:1">Gratis</h3>${S.plan==='gratis'?'<span class="tag ok">Tu plan</span>':''}</div>
+    <div class="price">$0 <small>/ mes</small></div>
+    <ul class="tick"><li>Ruta básica (3 lecciones)</li><li>Comparador de herramientas</li><li>Lista de chequeo</li><li class="no">Ruta intermedia y certificado</li><li class="no">Simulador ilimitado</li></ul></div>
+  <div class="card" style="border:2px solid var(--pri)"><div class="row"><h3 class="grow" style="flex:1">Pro</h3>${S.plan==='pro'?'<span class="tag ok">Tu plan</span>':'<span class="tag">Recomendado</span>'}</div>
+    <div class="price">$19.900 <small>COP / mes</small></div>
+    <ul class="tick"><li>Todas las rutas (básica e intermedia)</li><li>Simulador con retroalimentación ilimitado</li><li>Quices y certificado</li><li>Retos semanales y comunidad</li></ul>
+    ${S.plan==='pro'?'':'<button class="btn" data-go="pago">Elegir plan Pro</button>'}</div>`;
+
+V.pago = () => `
+  <button class="chip" data-go="planes">← Volver a planes</button>
+  <h2 style="margin-top:10px">Pago simulado</h2>
+  <div class="warn">Esto es un prototipo: <b>no se cobra nada ni se piden datos de pago reales.</b></div>
+  <div class="card"><div class="row"><b class="grow" style="flex:1">Plan Pro</b><b>$19.900 / mes</b></div></div>
+  <label>Medio de pago</label>
+  ${['Nequi','PSE','Tarjeta'].map(m=>`<button class="opt ${S.pay===m?'on':''}" data-act="pay" data-v="${m}">${{Nequi:'📱',PSE:'🏦',Tarjeta:'💳'}[m]} ${m}</button>`).join('')}
+  <button class="btn" data-act="confirmPay">Confirmar pago simulado</button>`;
+
+V.exito = () => `
+  <div class="card" style="text-align:center;background:var(--ok-s)"><div style="font-size:48px">🎉</div><h2>¡Ya tienes el plan Pro!</h2><p>Pago simulado con ${esc(S.pay)}. Ya puedes seguir con la ruta intermedia.</p></div>
+  <button class="btn" data-go="ruta">Ir a mi ruta</button>`;
+
+V.mas = () => `
+  <h2>Más</h2>
+  ${[['quiz','📝','Quices y certificado','Pon a prueba lo aprendido'],['retos','🏆','Retos semanales y comunidad','Un reto breve cada semana'],['planes','💎','Planes Gratis y Pro','Compara y elige tu plan'],['registro','👤','Mi perfil','Cambia tu rol o tipo de negocio']]
+   .map(x=>`<button class="lesson" data-go="${x[0]}"><div class="ic">${x[1]}</div><div style="flex:1"><h3>${x[2]}</h3><span class="mut">${x[3]}</span></div></button>`).join('')}`;
+
+/* ============ Router ============ */
+const TABMAP = {ruta:'ruta',leccion:'ruta',registro:'mas',comparar:'comparar',prompts:'prompts',ejercicio:'ejercicio',checklist:'ejercicio',quiz:'mas',certificado:'mas',retos:'mas',planes:'mas',pago:'mas',exito:'mas',mas:'mas'};
+function render(){
+  clearInterval(timer);
+  const [r,arg] = (location.hash.slice(1)||'registro').split('/');
+  const view = V[r] || V.registro;
+  $('#app').innerHTML = view(arg);
+  $('#app').scrollTop = 0;
+  const tab = TABMAP[r]||'mas';
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on', b.dataset.go===tab || (tab==='ejercicio'&&b.dataset.go==='ejercicio')));
+  document.title = 'IA Impulsa · Prototipo de alta resolución';
+}
+window.addEventListener('hashchange', render);
+
+/* ============ Acciones ============ */
+const ACT = {
+  role(el){S.role=el.dataset.v; S.name=$('#nm').value; S.biz=$('#bz').value; render();},
+  saveProfile(){
+    S.name=$('#nm').value.trim(); S.biz=$('#bz').value;
+    if(!S.name){toast('Escribe tu nombre para continuar'); return;}
+    if(!S.role){toast('Elige tu rol para continuar'); return;}
+    try{localStorage.setItem('iai_profile',JSON.stringify({name:S.name,role:S.role,biz:S.biz}));}catch(e){}
+    go('ruta');
+  },
+  play(el){
+    const bar=$('#vbar'); let w=0; el.style.display='none'; clearInterval(timer);
+    timer=setInterval(()=>{w+=2; bar.style.width=w+'%'; if(w>=100){clearInterval(timer); toast('Fin del video (simulado)');}},120);
+  },
+  complete(el){S.done.add(+el.dataset.v); toast('¡Lección completada!'); render();},
+  filter(el){S.filter=el.dataset.v; render();},
+  ptab(el){S.ptab=el.dataset.v; render();},
+  copy(){
+    const t=$('#pout').textContent;
+    (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Prompt copiado')).catch(()=>{
+      const r=document.createRange(); r.selectNodeContents($('#pout')); const s=getSelection(); s.removeAllRanges(); s.addRange(r); toast('Selecciona y copia el texto');
+    });
+  },
+  sel(el){const i=+el.dataset.v; S.sel.has(i)?S.sel.delete(i):S.sel.add(i); render();},
+  checkEj(){S.ejChecked=true; render();},
+  resetEj(){S.ejChecked=false; S.sel=new Set(); render();},
+  ctype(el){S.ctype=el.dataset.v; render();},
+  chk(el){const k=S.ctype+el.dataset.v; S.chk.has(k)?S.chk.delete(k):S.chk.add(k); render();},
+  qa(el){S.qa[S.qi]=+el.dataset.v; render();},
+  qnext(){S.qi++; render();},
+  resetQuiz(){S.qi=0; S.qa=[]; render();},
+  cert(){toast('En el producto final se descargaría un PDF');},
+  reto(){S.reto=!S.reto; render();},
+  wa(){toast('Aquí se abriría el enlace real al grupo de WhatsApp');},
+  pay(el){S.pay=el.dataset.v; render();},
+  confirmPay(){S.plan='pro'; go('exito');},
+};
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g){ $('#drawer').classList.remove('on'); go(g.dataset.go); return; }
+  const a=e.target.closest('[data-act]'); if(a && ACT[a.dataset.act]) ACT[a.dataset.act](a,e);
+});
+document.addEventListener('input',e=>{
+  const k=e.target.dataset && e.target.dataset.pv;
+  if(k){ (S.pv[S.ptab]=S.pv[S.ptab]||{})[k]=e.target.value; $('#pout').textContent=promptText(); }
+});
+
+/* ============ Índice del prototipo ============ */
+const INDEX = [['registro','Registro y perfil personalizado'],['ruta','Ruta de aprendizaje con avance visible'],['leccion/2','Reproductor de microlecciones'],['comparar','Comparador de herramientas de IA'],['prompts','Biblioteca de prompts interactiva'],['ejercicio','Simulador de ejercicio con retroalimentación'],['checklist','Lista de chequeo interactiva'],['quiz','Quices y certificado'],['retos','Retos semanales y comunidad'],['planes','Flujo de suscripción al Plan Pro']];
+$('#drawerBox').innerHTML = `<h3>Índice del prototipo</h3><p class="mut">Salta directo a cada funcionalidad (útil para las sesiones de validación).</p>`+INDEX.map((x,i)=>`<button class="it" data-go="${x[0]}"><span class="n">${i+1}</span><span>${x[1]}</span></button>`).join('')+`<button class="btn sec" style="margin-top:14px" id="closeDr">Cerrar</button>`;
+$('#menuBtn').onclick=()=>$('#drawer').classList.add('on');
+$('#closeDr').onclick=()=>$('#drawer').classList.remove('on');
+$('#drawer').addEventListener('click',e=>{if(e.target.id==='drawer')$('#drawer').classList.remove('on');});
+
+if(!location.hash) location.hash = S.name ? 'ruta' : 'registro'; else render();
+render();
+</script>
+</body>
+</html>

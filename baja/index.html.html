@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IA Impulsa · Prototipo de baja resolución</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#333;font-family:Arial,Helvetica,sans-serif;font-size:14px}
+.wrap{display:flex;gap:24px;max-width:860px;margin:0 auto;padding:16px;align-items:flex-start}
+.facil{width:230px;flex-shrink:0;border:2px dashed #999;padding:10px}
+.facil h3{margin:0 0 6px;font-size:13px;text-transform:uppercase}
+.facil p{font-size:12px;color:#666;margin:0 0 8px}
+.facil button{display:block;width:100%;text-align:left;border:1px solid #999;background:#fff;padding:6px;margin-bottom:4px;font-size:12px;cursor:pointer}
+.facil button.on{background:#ddd;font-weight:bold}
+.stage{flex:1;min-width:0}
+.banner{background:#ddd;border:1px dashed #777;text-align:center;font-size:12px;padding:5px;margin-bottom:8px;color:#444}
+.phone{width:320px;height:600px;margin:0 auto;border:3px solid #555;border-radius:26px;padding:14px;display:flex;flex-direction:column;background:#fff;position:relative}
+.screen{display:none;flex:1;flex-direction:column;overflow:auto}
+.screen.on{display:flex}
+.hd{border-bottom:2px solid #888;padding-bottom:6px;margin-bottom:10px;font-weight:bold;display:flex;justify-content:space-between}
+.box{border:2px solid #888;padding:8px;margin-bottom:8px;background:#fafafa}
+.img{border:2px solid #888;height:60px;display:grid;place-items:center;color:#888;position:relative;margin-bottom:8px;background:repeating-linear-gradient(45deg,#fff,#fff 8px,#f1f1f1 8px,#f1f1f1 16px)}
+.ln{height:8px;background:#ccc;margin:6px 0}
+.ln.s{width:60%}.ln.m{width:80%}
+.btn{border:2px solid #555;background:#eee;text-align:center;padding:9px;margin:6px 0;font-weight:bold;cursor:pointer;display:block;width:100%;font-size:14px;color:#333}
+.btn.dis{cursor:default;color:#777;border-style:dashed}
+.btn:active{background:#ccc}
+.radio{display:flex;gap:8px;align-items:center;border:2px solid #888;padding:8px;margin-bottom:6px;cursor:pointer}
+.radio i{width:14px;height:14px;border:2px solid #555;border-radius:50%;display:block}
+.radio.on i{background:#555}
+.sel{border:2px solid #888;padding:8px;display:flex;justify-content:space-between;background:#fff;margin-bottom:6px}
+.card{border:2px solid #888;padding:8px;display:flex;gap:8px;align-items:center;margin-bottom:8px;cursor:pointer}
+.card .img{width:54px;height:44px;margin:0;flex-shrink:0}
+.card .t{flex:1}
+.row{display:flex;gap:6px}
+.row>*{flex:1}
+.cb{display:flex;gap:8px;align-items:center;border:2px solid #888;padding:8px;margin-bottom:6px}
+.cb i{width:16px;height:16px;border:2px solid #555;display:block;flex-shrink:0}
+.note{font-size:11px;color:#777;font-style:italic;margin:4px 0}
+.warn{border:3px solid #555;padding:8px;margin-bottom:8px;background:#f2f2f2}
+.tbl{width:100%;border-collapse:collapse;margin-bottom:8px}
+.tbl td,.tbl th{border:2px solid #888;padding:6px;font-size:12px;text-align:left}
+.medal{width:50px;height:50px;border:2px solid #888;border-radius:50%;display:grid;place-items:center;font-size:11px;color:#777}
+.bar{border:2px solid #555;height:16px;margin:6px 0}
+.bar i{display:block;height:100%;width:60%;background:#999}
+.pn{display:flex;justify-content:space-between;margin-top:10px;max-width:320px;margin-left:auto;margin-right:auto}
+.pn button{border:1px solid #999;background:#fff;padding:7px 12px;cursor:pointer}
+.small{font-size:12px;color:#666;text-align:center;margin-top:8px}
+@media(max-width:700px){.wrap{flex-direction:column}.facil{width:100%}.facil .list{display:grid;grid-template-columns:1fr 1fr;gap:4px}.facil button{margin:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <aside class="facil">
+    <h3>Panel del facilitador</h3>
+    <p>Explora Nuestro Prototipo</p>
+    <div class="list" id="list"></div>
+  </aside>
+  <section class="stage">
+    <div class="banner">PROTOTIPO DE BAJA RESOLUCIÓN · borrador, no es la aplicación final</div>
+    <div class="phone" id="phone">
+
+      <!-- 1 -->
+      <div class="screen" data-t="1. Bienvenida y elección de rol">
+        <div class="hd"><span>Hoja 1</span><span>[☰]</span></div>
+        <div class="img" style="height:50px">[LOGO]</div>
+        <div class="ln m"></div><div class="ln s"></div>
+        <p style="margin:10px 0 4px"><b>¿Cuál es tu rol?</b></p>
+        <div class="radio" data-r><i></i> Propietario</div>
+        <div class="radio" data-r><i></i> Administrador</div>
+        <div class="radio" data-r><i></i> Empleado</div>
+        <p style="margin:8px 0 4px"><b>Tipo de negocio</b></p>
+        <div class="sel"><span>Elegir…</span><span>▼</span></div>
+        <div class="btn" data-go="2">[ Continuar ]</div>
+      </div>
+
+      <!-- 2 -->
+      <div class="screen" data-t="2. Menú de microcursos por tarea">
+        <div class="hd"><span>Hoja 2 · Microcursos</span><span>[☰]</span></div>
+        <div class="card" data-go="3"><div class="img">img</div><div class="t"><b>Promociones</b><div class="ln"></div></div><span>›</span></div>
+        <div class="card" data-go="3"><div class="img">img</div><div class="t"><b>Catálogo</b><div class="ln"></div></div><span>›</span></div>
+        <div class="card" data-go="3"><div class="img">img</div><div class="t"><b>Atención al cliente</b><div class="ln"></div></div><span>›</span></div>
+        <div class="card" data-go="3"><div class="img">img</div><div class="t"><b>Organización</b><div class="ln"></div></div><span>›</span></div>
+        <div class="note">Al tocar un microcurso se abre la hoja 3.</div>
+      </div>
+
+      <!-- 3 -->
+      <div class="screen" data-t="3. Pantalla de microlección">
+        <div class="hd"><span>Hoja 3 · Lección</span><span>5–15 min</span></div>
+        <div class="img" style="height:110px">[ VIDEO o TEXTO ]</div>
+        <b>Título de la lección</b>
+        <div class="ln"></div><div class="ln m"></div><div class="ln s"></div>
+        <div class="box"><b>Ejemplo</b><div class="ln"></div><div class="ln m"></div></div>
+        <div class="row"><div class="btn dis">[ Anterior ]</div><div class="btn">[ Siguiente ]</div></div>
+      </div>
+
+      <!-- 4 -->
+      <div class="screen" data-t="4. Guía “¿Qué IA uso para esto?”">
+        <div class="hd"><span>Hoja 4 · ¿Qué IA uso?</span><span>[☰]</span></div>
+        <div class="sel"><span>Tarea: elegir…</span><span>▼</span></div>
+        <table class="tbl"><tr><th>Herramienta</th><th>Sirve para</th><th>Ojo con</th></tr>
+          <tr><td>[nombre]</td><td>[texto]</td><td>[texto]</td></tr>
+          <tr><td>[nombre]</td><td>[texto]</td><td>[texto]</td></tr>
+          <tr><td>[nombre]</td><td>[texto]</td><td>[texto]</td></tr></table>
+        <div class="ln"></div><div class="ln m"></div>
+      </div>
+
+      <!-- 5 -->
+      <div class="screen" data-t="5. Biblioteca de prompts">
+        <div class="hd"><span>Hoja 5 · Prompts</span><span>[☰]</span></div>
+        <div class="sel"><span>Tipo de negocio…</span><span>▼</span></div>
+        <div class="box"><b>Prompt 1</b><div class="ln"></div><div class="ln m"></div><div class="btn" style="width:40%">[ Copiar ]</div></div>
+        <div class="box"><b>Prompt 2</b><div class="ln"></div><div class="ln m"></div><div class="btn" style="width:40%">[ Copiar ]</div></div>
+        <div class="box"><b>Prompt 3</b><div class="ln"></div><div class="ln m"></div><div class="btn" style="width:40%">[ Copiar ]</div></div>
+      </div>
+
+      <!-- 6 -->
+      <div class="screen" data-t="6. Alertas de privacidad">
+        <div class="hd"><span>Hoja 6 · Privacidad</span><span>[☰]</span></div>
+        <div class="warn"><b>⚠ Nunca compartas con una IA:</b>
+          <div class="ln"></div><div class="ln m"></div><div class="ln"></div><div class="ln s"></div></div>
+        <div class="box"><b>Mejor así</b><div class="ln"></div><div class="ln m"></div></div>
+        <div class="btn">[ Entendido ]</div>
+      </div>
+
+      <!-- 7 -->
+      <div class="screen" data-t="7. Lista de chequeo de respuestas">
+        <div class="hd"><span>Hoja 7 · Chequeo</span><span>[☰]</span></div>
+        <p style="margin:0 0 8px"><b>Revisa la respuesta de la IA</b></p>
+        <div class="cb" data-c><i></i><span>Pregunta 1 …</span></div>
+        <div class="cb" data-c><i></i><span>Pregunta 2 …</span></div>
+        <div class="cb" data-c><i></i><span>Pregunta 3 …</span></div>
+        <div class="cb" data-c><i></i><span>Pregunta 4 …</span></div>
+        <div class="btn">[ Terminar revisión ]</div>
+      </div>
+
+      <!-- 8 -->
+      <div class="screen" data-t="8. Ejercicio con datos ficticios">
+        <div class="hd"><span>Hoja 8 · Ejercicio</span><span>[☰]</span></div>
+        <div class="box"><b>Caso inventado</b><div class="ln"></div><div class="ln m"></div><div class="ln s"></div></div>
+        <p style="margin:4px 0"><b>Tu respuesta</b></p>
+        <div class="box" style="height:90px">[ caja de texto ]</div>
+        <div class="btn">[ Enviar ]</div>
+        <div class="note">El facilitador da la retroalimentación de forma manual.</div>
+      </div>
+
+      <!-- 9 -->
+      <div class="screen" data-t="9. Progreso y medallas">
+        <div class="hd"><span>Hoja 9 · Mi progreso</span><span>[☰]</span></div>
+        <b>Lecciones completadas</b>
+        <div class="bar"><i></i></div>
+        <div class="note">[ 60 % ]</div>
+        <p style="margin:10px 0 6px"><b>Medallas</b></p>
+        <div class="row"><div class="medal">medalla</div><div class="medal">medalla</div><div class="medal">medalla</div><div class="medal">?</div></div>
+      </div>
+
+      <!-- 10 -->
+      <div class="screen" data-t="10. Planes Gratis y Pro">
+        <div class="hd"><span>Hoja 10 · Planes</span><span>[☰]</span></div>
+        <div class="row">
+          <div class="box"><b>Gratis</b><div class="ln"></div><div class="ln m"></div><div class="ln"></div><div class="btn">[ Elegir ]</div></div>
+          <div class="box"><b>Pro</b><div class="ln"></div><div class="ln m"></div><div class="ln"></div><div class="btn">[ Elegir ]</div></div>
+        </div>
+        <div class="note">Precios: [por definir]</div>
+      </div>
+
+    </div>
+    <div class="pn"><button id="prev">← Hoja anterior</button><button id="next">Hoja siguiente →</button></div>
+    <div class="small" id="label"></div>
+  </section>
+</div>
+
+<script>
+const screens=[...document.querySelectorAll('.screen')];
+const list=document.getElementById('list');
+let cur=0;
+screens.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.textContent=s.dataset.t; b.onclick=()=>show(i); list.appendChild(b);
+});
+function show(i){
+  cur=(i+screens.length)%screens.length;
+  screens.forEach((s,k)=>s.classList.toggle('on',k===cur));
+  [...list.children].forEach((b,k)=>b.classList.toggle('on',k===cur));
+  document.getElementById('label').textContent='Hoja '+(cur+1)+' de '+screens.length+' · '+screens[cur].dataset.t;
+}
+document.getElementById('prev').onclick=()=>show(cur-1);
+document.getElementById('next').onclick=()=>show(cur+1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1);});
+/* Recorrido principal clicable: rol -> microcurso -> lección */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){show(+g.dataset.go-1);return;}
+  const r=e.target.closest('[data-r]'); if(r){document.querySelectorAll('[data-r]').forEach(x=>x.classList.remove('on'));r.classList.add('on');}
+  const c=e.target.closest('[data-c]'); if(c){c.querySelector('i').textContent=c.querySelector('i').textContent?'':'✓';}
+});
+show(0);
+</script>
+</body>
+</html>
